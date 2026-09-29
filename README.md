@@ -95,7 +95,7 @@ docker run -d \
   -e TSNET_PROXY_MODE=https \
   -e TSNET_PROXY_TARGET=http://backend:8080 \
   -v tsnet-proxy-state:/var/lib/tsnet-proxy \
-  409905535292.dkr.ecr.us-east-1.amazonaws.com/tsnet-proxy:latest
+  ghcr.io/flared/tsnet-proxy:latest
 ```
 
 The image runs as UID `65532`. Persist `/var/lib/tsnet-proxy` so the node
@@ -114,17 +114,13 @@ make docker-build
 
 Push a `v*` tag. The [Docker Release](.github/workflows/docker-release.yml)
 workflow builds `linux/amd64` and `linux/arm64` images and pushes them to
-`409905535292.dkr.ecr.us-east-1.amazonaws.com/tsnet-proxy`, tagged with the
+`ghcr.io/flared/tsnet-proxy`, tagged with the
 version (`1.2.3`, `1.2`), the commit SHA and `latest`.
 
 ```sh
 git tag v0.1.0
 git push origin v0.1.0
 ```
-
-The workflow assumes the `github-workflows` IAM role through GitHub OIDC. That
-role must trust `repo:Flared/tsnet-proxy` and be allowed to push to the
-`tsnet-proxy` ECR repository.
 
 ## License
 

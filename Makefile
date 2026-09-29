@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := build
 
-DOCKER_IMAGE := "409905535292.dkr.ecr.us-east-1.amazonaws.com/tsnet-proxy"
+DOCKER_IMAGE := "ghcr.io/flared/tsnet-proxy"
 
 .PHONY: ci
 ci: \
