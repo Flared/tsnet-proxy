@@ -44,11 +44,11 @@ func TestReverseProxyHeaders(t *testing.T) {
 			name: "user node",
 			who:  fakeWhoIs{resp: user},
 			want: map[string]string{
-				headerNodeName:       "laptop.tailnet.ts.net",
-				headerNodeTags:       "",
-				headerUserLogin:      "alice@example.com",
-				headerUserName:       "=?utf-8?q?Alice_=C3=9Cnicode?=",
-				headerUserProfilePic: "https://example.com/pic.png",
+				HeaderNodeName:       "laptop.tailnet.ts.net",
+				HeaderNodeTags:       "",
+				HeaderUserLogin:      "alice@example.com",
+				HeaderUserName:       "=?utf-8?q?Alice_=C3=9Cnicode?=",
+				HeaderUserProfilePic: "https://example.com/pic.png",
 				"Tailscale-Spoofed":  "",
 				"X-Forwarded-Host":   "app.tailnet.ts.net",
 			},
@@ -57,11 +57,11 @@ func TestReverseProxyHeaders(t *testing.T) {
 			name: "tagged node",
 			who:  fakeWhoIs{resp: tagged},
 			want: map[string]string{
-				headerNodeName:       "ci-runner.tailnet.ts.net",
-				headerNodeTags:       "tag:ci,tag:prod",
-				headerUserLogin:      "",
-				headerUserName:       "",
-				headerUserProfilePic: "",
+				HeaderNodeName:       "ci-runner.tailnet.ts.net",
+				HeaderNodeTags:       "tag:ci,tag:prod",
+				HeaderUserLogin:      "",
+				HeaderUserName:       "",
+				HeaderUserProfilePic: "",
 				"Tailscale-Spoofed":  "",
 			},
 		},
@@ -69,8 +69,8 @@ func TestReverseProxyHeaders(t *testing.T) {
 			name: "whois error",
 			who:  fakeWhoIs{err: errors.New("boom")},
 			want: map[string]string{
-				headerNodeName:      "",
-				headerUserLogin:     "",
+				HeaderNodeName:      "",
+				HeaderUserLogin:     "",
 				"Tailscale-Spoofed": "",
 			},
 		},
@@ -90,8 +90,8 @@ func TestReverseProxyHeaders(t *testing.T) {
 			rp := newReverseProxy(target, tt.who)
 
 			req := httptest.NewRequest(http.MethodGet, "http://app.tailnet.ts.net/hello", nil)
-			req.Header.Set(headerUserLogin, "mallory@example.com")
-			req.Header.Set(headerNodeTags, "tag:admin")
+			req.Header.Set(HeaderUserLogin, "mallory@example.com")
+			req.Header.Set(HeaderNodeTags, "tag:admin")
 			req.Header.Set("Tailscale-Spoofed", "1")
 			rec := httptest.NewRecorder()
 			rp.ServeHTTP(rec, req)

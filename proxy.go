@@ -17,12 +17,12 @@ import (
 )
 
 const (
-	headerUserLogin      = "Tailscale-User-Login"
-	headerUserName       = "Tailscale-User-Name"
-	headerUserProfilePic = "Tailscale-User-Profile-Pic"
-	headerNodeName       = "Tailscale-Node-Name"
-	headerNodeTags       = "Tailscale-Node-Tags"
-	headerPrefix         = "Tailscale-"
+	HeaderUserLogin      = "Tailscale-User-Login"
+	HeaderUserName       = "Tailscale-User-Name"
+	HeaderUserProfilePic = "Tailscale-User-Profile-Pic"
+	HeaderNodeName       = "Tailscale-Node-Name"
+	HeaderNodeTags       = "Tailscale-Node-Tags"
+	HeaderPrefix         = "Tailscale-"
 )
 
 type whoIser interface {
@@ -48,7 +48,7 @@ func newReverseProxy(target *url.URL, wc whoIser) *httputil.ReverseProxy {
 
 func stripTailscaleHeaders(h http.Header) {
 	for k := range h {
-		if strings.HasPrefix(k, headerPrefix) {
+		if strings.HasPrefix(k, HeaderPrefix) {
 			h.Del(k)
 		}
 	}
@@ -57,7 +57,7 @@ func stripTailscaleHeaders(h http.Header) {
 func formatTailscaleHeaders(h http.Header) string {
 	var parts []string
 	for k, v := range h {
-		if strings.HasPrefix(k, headerPrefix) {
+		if strings.HasPrefix(k, HeaderPrefix) {
 			parts = append(parts, k+"="+strings.Join(v, ","))
 		}
 	}
@@ -70,19 +70,19 @@ func addIdentityHeaders(h http.Header, who *apitype.WhoIsResponse) {
 		return
 	}
 
-	h.Set(headerNodeName, encHeader(strings.TrimSuffix(who.Node.Name, ".")))
+	h.Set(HeaderNodeName, encHeader(strings.TrimSuffix(who.Node.Name, ".")))
 
 	if who.Node.IsTagged() {
-		h.Set(headerNodeTags, encHeader(strings.Join(who.Node.Tags, ",")))
+		h.Set(HeaderNodeTags, encHeader(strings.Join(who.Node.Tags, ",")))
 		return
 	}
 
 	if who.UserProfile == nil {
 		return
 	}
-	h.Set(headerUserLogin, encHeader(who.UserProfile.LoginName))
-	h.Set(headerUserName, encHeader(who.UserProfile.DisplayName))
-	h.Set(headerUserProfilePic, who.UserProfile.ProfilePicURL)
+	h.Set(HeaderUserLogin, encHeader(who.UserProfile.LoginName))
+	h.Set(HeaderUserName, encHeader(who.UserProfile.DisplayName))
+	h.Set(HeaderUserProfilePic, who.UserProfile.ProfilePicURL)
 }
 
 func encHeader(v string) string {

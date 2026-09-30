@@ -56,7 +56,7 @@ func run(ctx context.Context, cfg *config) error {
 
 	var ln net.Listener
 	var err error
-	if cfg.Mode == modeHTTPS {
+	if cfg.Mode == ModeHTTPS {
 		ln, err = s.ListenTLS("tcp", cfg.listenAddr())
 	} else {
 		ln, err = s.Listen("tcp", cfg.listenAddr())
@@ -73,7 +73,7 @@ func run(ctx context.Context, cfg *config) error {
 
 	log.Printf("proxying %s (%s) -> %s%s on tailnet", cfg.Target, cfg.Mode, cfg.Hostname, cfg.listenAddr())
 
-	if cfg.Mode == modeTCP {
+	if cfg.Mode == ModeTCP {
 		return serveTCP(ctx, ln, cfg.Target)
 	}
 

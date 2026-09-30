@@ -12,9 +12,9 @@ import (
 )
 
 const (
-	modeTCP   = "tcp"
-	modeHTTP  = "http"
-	modeHTTPS = "https"
+	ModeTCP   = "tcp"
+	ModeHTTP  = "http"
+	ModeHTTPS = "https"
 )
 
 type config struct {
@@ -53,14 +53,54 @@ func parseConfig(args []string, lookupEnv lookupEnvFunc, output io.Writer) (*con
 
 	cfg := &config{}
 	var listenPort, tags string
-	fs.StringVar(&cfg.Hostname, "hostname", env("TSNET_PROXY_HOSTNAME", ""), "tailnet hostname to register (env TSNET_PROXY_HOSTNAME)")
-	fs.StringVar(&cfg.Target, "target", env("TSNET_PROXY_TARGET", ""), "target to proxy to: a port, host:port, or http(s):// URL (env TSNET_PROXY_TARGET)")
-	fs.StringVar(&cfg.Mode, "mode", env("TSNET_PROXY_MODE", modeTCP), "proxy mode: tcp, http or https (env TSNET_PROXY_MODE)")
-	fs.StringVar(&listenPort, "listen-port", env("TSNET_PROXY_LISTEN_PORT", ""), "tailnet port to listen on; defaults to 443 for https, 80 for http, the target port for tcp (env TSNET_PROXY_LISTEN_PORT)")
-	fs.StringVar(&cfg.StateDir, "state-dir", env("TSNET_PROXY_STATE_DIR", ""), "directory to persist tsnet state; defaults to a per-user config dir (env TSNET_PROXY_STATE_DIR)")
-	fs.BoolVar(&cfg.Ephemeral, "ephemeral", envBool("TSNET_PROXY_EPHEMERAL"), "register as an ephemeral node (env TSNET_PROXY_EPHEMERAL)")
-	fs.StringVar(&tags, "advertise-tags", env("TSNET_PROXY_ADVERTISE_TAGS", ""), "comma-separated tags to advertise, e.g. tag:proxy (env TSNET_PROXY_ADVERTISE_TAGS)")
-	fs.BoolVar(&cfg.Verbose, "v", envBool("TSNET_PROXY_VERBOSE"), "verbose tsnet backend logs (env TSNET_PROXY_VERBOSE)")
+	fs.StringVar(
+		&cfg.Hostname,
+		"hostname",
+		env("TSNET_PROXY_HOSTNAME", ""),
+		"tailnet hostname to register (env TSNET_PROXY_HOSTNAME)",
+	)
+	fs.StringVar(
+		&cfg.Target,
+		"target",
+		env("TSNET_PROXY_TARGET", ""),
+		"target to proxy to: a port, host:port, or http(s):// URL (env TSNET_PROXY_TARGET)",
+	)
+	fs.StringVar(
+		&cfg.Mode,
+		"mode",
+		env("TSNET_PROXY_MODE", ModeTCP),
+		"proxy mode: tcp, http or https (env TSNET_PROXY_MODE)",
+	)
+	fs.StringVar(
+		&listenPort,
+		"listen-port",
+		env("TSNET_PROXY_LISTEN_PORT", ""),
+		"tailnet port to listen on; defaults to 443 for https, 80 for http, the target port for tcp (env TSNET_PROXY_LISTEN_PORT)",
+	)
+	fs.StringVar(
+		&cfg.StateDir,
+		"state-dir",
+		env("TSNET_PROXY_STATE_DIR", ""),
+		"directory to persist tsnet state; defaults to a per-user config dir (env TSNET_PROXY_STATE_DIR)",
+	)
+	fs.BoolVar(
+		&cfg.Ephemeral,
+		"ephemeral",
+		envBool("TSNET_PROXY_EPHEMERAL"),
+		"register as an ephemeral node (env TSNET_PROXY_EPHEMERAL)",
+	)
+	fs.StringVar(
+		&tags,
+		"advertise-tags",
+		env("TSNET_PROXY_ADVERTISE_TAGS", ""),
+		"comma-separated tags to advertise, e.g. tag:proxy (env TSNET_PROXY_ADVERTISE_TAGS)",
+	)
+	fs.BoolVar(
+		&cfg.Verbose,
+		"v",
+		envBool("TSNET_PROXY_VERBOSE"),
+		"verbose tsnet backend logs (env TSNET_PROXY_VERBOSE)",
+	)
 	fs.Usage = func() {
 		fmt.Fprintf(output, "usage: tsnet-proxy [flags]\n\nAuthentication uses TS_AUTHKEY or TS_CLIENT_SECRET.\n\n")
 		fs.PrintDefaults()
@@ -79,7 +119,7 @@ func parseConfig(args []string, lookupEnv lookupEnvFunc, output io.Writer) (*con
 		return nil, errors.New("--target is required")
 	}
 	switch cfg.Mode {
-	case modeTCP, modeHTTP, modeHTTPS:
+	case ModeTCP, ModeHTTP, ModeHTTPS:
 	default:
 		return nil, fmt.Errorf("invalid --mode %q: must be tcp, http or https", cfg.Mode)
 	}
@@ -110,7 +150,7 @@ func (c *config) normalizeTarget() (int, error) {
 		c.Target = net.JoinHostPort("localhost", strconv.Itoa(p))
 	}
 
-	if c.Mode == modeTCP {
+	if c.Mode == ModeTCP {
 		host, port, err := net.SplitHostPort(c.Target)
 		if err != nil {
 			return 0, errors.New("tcp mode requires a port or host:port")
@@ -145,9 +185,9 @@ func (c *config) normalizeTarget() (int, error) {
 
 func defaultListenPort(mode string, targetPort int) int {
 	switch mode {
-	case modeHTTPS:
+	case ModeHTTPS:
 		return 443
-	case modeHTTP:
+	case ModeHTTP:
 		return 80
 	}
 	return targetPort
