@@ -8,6 +8,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -111,7 +112,7 @@ func run() error {
 	if rest, ok := strings.CutPrefix(repoURL, "git@github.com:"); ok {
 		repoURL = "https://github.com/" + rest
 	}
-	fmt.Printf("\nRelease: %s/releases/tag/%s\n", repoURL, tag)
+	fmt.Printf("\nCreate the release: %s/releases/new?tag=%s\n", repoURL, url.QueryEscape(tag))
 	return nil
 }
 
