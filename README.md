@@ -113,8 +113,7 @@ make update-deps   # update direct Go dependencies to their latest versions
 - Tags have the form `v<tsnet-proxy version>-<tailscale version>`, where the suffix is the `tailscale.com` version in `go.mod`:
 
 ```sh
-git tag v0.1.2-1.102.5
-git push origin v0.1.2-1.102.5
+bin/release.go
 ```
 
 ## 📄 License
