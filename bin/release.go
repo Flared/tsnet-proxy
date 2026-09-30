@@ -58,10 +58,10 @@ func run() error {
 	}
 	tag := fmt.Sprintf("v%s-%s", next, tsVersion)
 
-	if err := confirmTag(stdin, tag); err != nil {
+	if err := confirmRelease(stdin, tag); err != nil {
 		return err
 	}
-	if err := pushTag(tag); err != nil {
+	if err := pushRelease(tag); err != nil {
 		return err
 	}
 
@@ -177,12 +177,12 @@ func askVersion(r *bufio.Reader, latest version, latestTag string) (version, err
 	return v, nil
 }
 
-func confirmTag(r *bufio.Reader, tag string) error {
+func confirmRelease(r *bufio.Reader, tag string) error {
 	head, err := git("rev-parse", "--short", "HEAD")
 	if err != nil {
 		return err
 	}
-	answer, err := prompt(r, fmt.Sprintf("Tag %s as %s and push to origin? [y/N] ", head, tag))
+	answer, err := prompt(r, fmt.Sprintf("Tag %s as %s and push it with main to origin? [y/N] ", head, tag))
 	if err != nil {
 		return err
 	}
@@ -192,13 +192,24 @@ func confirmTag(r *bufio.Reader, tag string) error {
 	return nil
 }
 
-func pushTag(tag string) error {
+// pushRelease tags HEAD and atomically pushes it to main along with the tag,
+// so origin never has the tag without the commit on main. The local tag
+// is removed if the push fails.
+func pushRelease(tag string) error {
 	if _, err := git("tag", tag); err != nil {
 		return err
 	}
-	push := exec.Command("git", "push", "origin", tag)
+	push := exec.Command(
+		"git",
+		"push",
+		"--atomic",
+		"origin",
+		"HEAD:refs/heads/main",
+		"refs/tags/"+tag,
+	)
 	push.Stdout, push.Stderr = os.Stdout, os.Stderr
 	if err := push.Run(); err != nil {
+		_, _ = git("tag", "-d", tag)
 		return fmt.Errorf("git push failed: %w", err)
 	}
 	return nil
