@@ -31,7 +31,7 @@ format-check:
 
 .PHONY: update-deps
 update-deps:
-	go get -u -t ./...
+	go get tailscale.com@latest
 	go mod tidy
 
 .PHONY: docker-build
