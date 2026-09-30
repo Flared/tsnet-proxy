@@ -108,6 +108,7 @@ reusable auth key.
 make ci            # build, vet, test, format-check
 make format
 make docker-build
+make update-deps   # update all Go dependencies to their latest minor/patch versions
 ```
 
 ## Releasing

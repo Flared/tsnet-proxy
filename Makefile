@@ -29,6 +29,11 @@ format:
 format-check:
 	@test -z "$$(gofmt -l .)" || (gofmt -l . && exit 1)
 
+.PHONY: update-deps
+update-deps:
+	go get -u -t ./...
+	go mod tidy
+
 .PHONY: docker-build
 docker-build:
 	docker build -t $(DOCKER_IMAGE) .
