@@ -5,10 +5,10 @@ own hostname, without running `tailscaled` next to it.
 
 This is a fork of Tailscale's
 [`cmd/tsnet-proxy`](https://github.com/tailscale/tailscale/blob/a00fd3273b3865ec587d0c4b36ab5debf358545e/cmd/tsnet-proxy/tsnet-proxy.go)
-with two differences:
+with some differences:
 
 - **Identity headers for tagged nodes.** Upstream drops all identity headers when the caller is a tagged node (servers, CI runners, …).
-- This version always forwards `Tailscale-Node-Name`, and forwards `Tailscale-Node-Tags` for tagged nodes, so the backend can authorize machine-to-machine traffic.
+  This version always forwards `Tailscale-Node-Name`, and forwards `Tailscale-Node-Tags` for tagged nodes, so the backend can authorize machine-to-machine traffic.
 - **Configurable target.** Upstream always proxies to `localhost:<port>`.
   Here the target can be any `host:port` or `http(s)://` URL, which makes it usable as a sidecar or as a standalone container in front of another service.
 
