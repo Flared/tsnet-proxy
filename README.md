@@ -7,14 +7,10 @@ This is a fork of Tailscale's
 [`cmd/tsnet-proxy`](https://github.com/tailscale/tailscale/blob/a00fd3273b3865ec587d0c4b36ab5debf358545e/cmd/tsnet-proxy/tsnet-proxy.go)
 with two differences:
 
-- **Identity headers for tagged nodes.** Upstream drops all identity headers
-  when the caller is a tagged node (servers, CI runners, …). This version
-  always forwards `Tailscale-Node-Name`, and forwards `Tailscale-Node-Tags`
-  for tagged nodes, so the backend can authorize machine-to-machine traffic.
+- **Identity headers for tagged nodes.** Upstream drops all identity headers when the caller is a tagged node (servers, CI runners, …).
+- This version always forwards `Tailscale-Node-Name`, and forwards `Tailscale-Node-Tags` for tagged nodes, so the backend can authorize machine-to-machine traffic.
 - **Configurable target.** Upstream always proxies to `localhost:<port>`.
-  Here the target can be any `host:port` or `http(s)://` URL, which makes it
-  usable as a sidecar or as a standalone container in front of another
-  service.
+  Here the target can be any `host:port` or `http(s)://` URL, which makes it usable as a sidecar or as a standalone container in front of another service.
 
 ## Modes
 
@@ -24,8 +20,7 @@ with two differences:
 | `http`  | HTTP reverse proxy               | 80                  | yes     |
 | `https` | HTTPS with an auto-issued cert   | 443                 | yes     |
 
-`https` requires [HTTPS certificates](https://tailscale.com/kb/1153/enabling-https)
-to be enabled on the tailnet.
+`https` requires [HTTPS certificates](https://tailscale.com/kb/1153/enabling-https) to be enabled on the tailnet.
 
 ## Identity headers
 
@@ -44,8 +39,7 @@ caller:
 Non-ASCII values are RFC 2047 Q-encoded, as done by `tailscale serve`.
 `X-Forwarded-For`, `X-Forwarded-Host` and `X-Forwarded-Proto` are also set.
 
-The backend must only be reachable through the proxy, otherwise clients can
-forge these headers.
+The backend must only be reachable through the proxy, otherwise clients can forge these headers.
 
 ## Configuration
 
@@ -70,8 +64,9 @@ Authentication is handled by tsnet, using the first of:
   used with `--advertise-tags`.
 - Otherwise, a login URL is printed to the logs.
 
-The auth key is only used on first start. Once the node state exists in the
-state directory, it is reused.
+The auth key is only used on first start.
+
+Once the node state exists in the state directory, it is reused.
 
 ## Usage
 
@@ -98,9 +93,9 @@ docker run -d \
   ghcr.io/flared/tsnet-proxy:latest
 ```
 
-The image runs as UID `65532`. Persist `/var/lib/tsnet-proxy` so the node
-keeps its identity across restarts, or use `TSNET_PROXY_EPHEMERAL=true` with a
-reusable auth key.
+The image runs as UID `65532`.
+
+Persist `/var/lib/tsnet-proxy` so the node keeps its identity across restarts, or use `TSNET_PROXY_EPHEMERAL=true` with a reusable auth key.
 
 ## Development
 
@@ -113,10 +108,8 @@ make update-deps   # update direct Go dependencies to their latest versions
 
 ## Releasing
 
-Push a `v*` tag. The [Docker Release](.github/workflows/docker-release.yml)
-workflow builds `linux/amd64` and `linux/arm64` images and pushes them to
-`ghcr.io/flared/tsnet-proxy`, tagged with the
-version (`1.2.3`, `1.2`), the commit SHA and `latest`.
+Push a `v*` tag.
+The [Docker Release](.github/workflows/docker-release.yml) workflow builds `linux/amd64` and `linux/arm64` images and pushes them to `ghcr.io/flared/tsnet-proxy`.
 
 ```sh
 git tag v0.1.0
