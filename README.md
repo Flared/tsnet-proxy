@@ -12,7 +12,7 @@ with some differences:
 - **Configurable target.** Upstream always proxies to `localhost:<port>`.
   Here the target can be any `host:port` or `http(s)://` URL, which makes it usable as a sidecar or as a standalone container in front of another service.
 
-## Modes
+## 🔀 Modes
 
 | Mode    | Tailnet listener                 | Default listen port | Headers |
 |---------|----------------------------------|---------------------|---------|
@@ -22,7 +22,7 @@ with some differences:
 
 `https` requires [HTTPS certificates](https://tailscale.com/kb/1153/enabling-https) to be enabled on the tailnet.
 
-## Identity headers
+## 🪪 Identity headers
 
 In `http` and `https` modes, any incoming header starting with `Tailscale-`
 is stripped, then the following are set from a Tailscale WhoIs lookup of the
@@ -41,7 +41,7 @@ Non-ASCII values are RFC 2047 Q-encoded, as done by `tailscale serve`.
 
 The backend must only be reachable through the proxy, otherwise clients can forge these headers.
 
-## Configuration
+## ⚙️ Configuration
 
 Every flag can also be set with an environment variable. Flags take
 precedence.
@@ -51,7 +51,7 @@ precedence.
 | `--hostname`       | `TSNET_PROXY_HOSTNAME`        | *required*          | Tailnet hostname to register. |
 | `--target`         | `TSNET_PROXY_TARGET`          | *required*          | A port (`8080` → `localhost:8080`), `host:port`, or, in HTTP modes, an `http(s)://` URL (a path is prefixed to requests). |
 | `--mode`           | `TSNET_PROXY_MODE`            | `tcp`               | `tcp`, `http` or `https`. |
-| `--listen-port`    | `TSNET_PROXY_LISTEN_PORT`     | see [Modes](#modes) | Tailnet port to listen on. |
+| `--listen-port`    | `TSNET_PROXY_LISTEN_PORT`     | see [Modes](#-modes) | Tailnet port to listen on. |
 | `--state-dir`      | `TSNET_PROXY_STATE_DIR`       | per-user config dir (`/var/lib/tsnet-proxy` in Docker) | Where tsnet persists its node state. |
 | `--ephemeral`      | `TSNET_PROXY_EPHEMERAL`       | `false`             | Register as an [ephemeral node](https://tailscale.com/kb/1111/ephemeral-nodes). |
 | `--advertise-tags` | `TSNET_PROXY_ADVERTISE_TAGS`  |                     | Comma-separated tags, e.g. `tag:proxy`. Required with OAuth clients. |
@@ -68,7 +68,7 @@ The auth key is only used on first start.
 
 Once the node state exists in the state directory, it is reused.
 
-## Usage
+## 🚀 Usage
 
 ```sh
 # Raw TCP: expose a remote Postgres as db:5432 on the tailnet.
@@ -81,7 +81,7 @@ tsnet-proxy --hostname=app --mode=https --target=8080
 tsnet-proxy --hostname=wiki --mode=https --target=https://wiki.internal/app
 ```
 
-### Docker
+### 🐳 Docker
 
 ```sh
 docker run -d \
@@ -97,7 +97,7 @@ The image runs as UID `65532`.
 
 Persist `/var/lib/tsnet-proxy` so the node keeps its identity across restarts, or use `TSNET_PROXY_EPHEMERAL=true` with a reusable auth key.
 
-## Development
+## 🛠️ Development
 
 ```sh
 make ci            # build, vet, test, format-check
@@ -106,7 +106,7 @@ make docker-build
 make update-deps   # update direct Go dependencies to their latest versions
 ```
 
-## Releasing
+## 📦 Releasing
 
 Push a `v*` tag.
 The [Docker Release](.github/workflows/docker-release.yml) workflow builds `linux/amd64` and `linux/arm64` images and pushes them to `ghcr.io/flared/tsnet-proxy`.
@@ -116,6 +116,6 @@ git tag v0.1.0
 git push origin v0.1.0
 ```
 
-## License
+## 📄 License
 
 BSD 3-Clause, see [LICENSE](LICENSE). Derived from Tailscale's `tsnet-proxy`.
