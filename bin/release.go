@@ -76,11 +76,17 @@ func run() error {
 // version is the tsnet-proxy part of a release: major, minor, patch.
 type version [3]int
 
-func (v version) String() string { return fmt.Sprintf("%d.%d.%d", v[0], v[1], v[2]) }
+func (v version) String() string {
+	return fmt.Sprintf("%d.%d.%d", v[0], v[1], v[2])
+}
 
-func (v version) compare(o version) int { return slices.Compare(v[:], o[:]) }
+func (v version) compare(o version) int {
+	return slices.Compare(v[:], o[:])
+}
 
-func (v version) nextMinor() version { return version{v[0], v[1] + 1, 0} }
+func (v version) nextPatch() version {
+	return version{v[0], v[1], v[2] + 1}
+}
 
 // parseVersion parses a version or tag, ignoring the tailscale suffix:
 // "v0.1.2-1.102.5" -> 0.1.2.
@@ -151,9 +157,9 @@ func latestRelease() (string, version, error) {
 }
 
 // askVersion prompts for a version greater than latest, suggesting the next
-// minor version.
+// patch version.
 func askVersion(r *bufio.Reader, latest version, latestTag string) (version, error) {
-	suggested := latest.nextMinor()
+	suggested := latest.nextPatch()
 	input, err := prompt(r, fmt.Sprintf("New tsnet-proxy version [%s]: ", suggested))
 	if err != nil {
 		return version{}, err
